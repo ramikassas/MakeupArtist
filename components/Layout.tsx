@@ -5,13 +5,36 @@ import { UserTier } from '../types';
 import LoginModal from './LoginModal';
 import PaymentModal from './PaymentModal';
 
+const DomainBanner: React.FC = () => (
+  <div className="bg-black text-white px-4 py-3 text-sm font-medium relative z-50">
+    <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">🔥</span>
+        <span>
+          <span className="font-bold text-gold-500">Premium Domain For Sale:</span> This functional SaaS concept is built on <strong>MakeupArtist.ai</strong>.
+        </span>
+      </div>
+      <div className="flex gap-3">
+        <a href="https://atom.com" target="_blank" rel="noreferrer" className="bg-white text-black px-4 py-1 rounded-full text-xs font-bold hover:bg-gray-200 transition-colors">
+          Buy on Atom
+        </a>
+        <a href="https://godaddy.com" target="_blank" rel="noreferrer" className="bg-transparent border border-white/40 text-white px-4 py-1 rounded-full text-xs font-bold hover:bg-white/10 transition-colors">
+          Buy on GoDaddy
+        </a>
+      </div>
+    </div>
+  </div>
+);
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      <DomainBanner />
+      
       {/* Header */}
-      <header className="fixed w-full z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <header className="fixed w-full z-40 top-[var(--banner-height,48px)] bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all" style={{ top: 'auto', position: 'sticky' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center space-x-2">
@@ -62,15 +85,19 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow pt-20">
+      <main className="flex-grow">
         {children}
       </main>
 
       {/* Footer */}
       <footer className="bg-gray-50 border-t border-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 text-center text-gray-400 text-sm">
-            <p className="font-serif italic mb-2">MakeupArtist.ai</p>
-            <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+        <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="font-serif italic text-gray-900 text-lg mb-4">MakeupArtist.ai</p>
+            <p className="text-gray-500 text-sm mb-6">Your Art. Amplified.</p>
+            <div className="text-xs text-gray-400 max-w-2xl mx-auto border-t border-gray-200 pt-6">
+                <p className="mb-2"><strong>Concept Disclaimer:</strong> This website is a functional demonstration for the domain name <strong>MakeupArtist.ai</strong>.</p>
+                <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+            </div>
         </div>
       </footer>
 

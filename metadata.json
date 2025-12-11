@@ -1,6 +1,6 @@
 {
-  "name": "MakeupArtist.ai - #1 AI Beauty Business Platform",
-  "description": "Makeup Artist AI Platform | Professional Makeup Portfolio Generator | AI Makeup Try-On | Beauty Business Tools. The all-in-one solution to automate your artistry and elevate your career.",
+  "name": "MakeupArtist.ai - Professional Beauty Business Platform",
+  "description": "Makeup Artist AI Platform | Professional Makeup Portfolio Generator | AI Makeup Try-On | Beauty Business Tools. The complete solution to turn your artistry into a digital brand.",
   "requestFramePermissions": [
     "camera",
     "microphone"
