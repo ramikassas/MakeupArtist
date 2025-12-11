@@ -1,6 +1,6 @@
 {
   "name": "MakeupArtist.ai",
-  "description": "Your professional AI beauty consultant featuring Live Voice Analysis, Custom Tutorials, and Deep Skin Analysis.",
+  "description": "The world's #1 AI Beauty Ecosystem. Automating the artistry, elevating the artist. Free essentials and professional grade tools.",
   "requestFramePermissions": [
     "camera",
     "microphone"

@@ -7,9 +7,9 @@ import Dashboard from './pages/Dashboard';
 import QuickChat from './pages/QuickChat';
 import LiveConsultantPage from './pages/LiveConsultant';
 import VideoStudio from './pages/VideoStudio';
-import Analysis from './pages/Analysis';
+import SkinAnalysis from './pages/SkinAnalysis';
+import BusinessSuite from './pages/BusinessSuite';
 
-// Explicitly import to ensure availability
 import './index.css'; 
 
 const App: React.FC = () => {
@@ -21,11 +21,12 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/chat" element={<QuickChat />} />
+            <Route path="/skin-analysis" element={<SkinAnalysis />} />
             
             {/* Pro Routes */}
             <Route path="/live" element={<LiveConsultantPage />} />
             <Route path="/video" element={<VideoStudio />} />
-            <Route path="/analysis" element={<Analysis />} />
+            <Route path="/business" element={<BusinessSuite />} />
           </Routes>
         </Layout>
       </HashRouter>
