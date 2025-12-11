@@ -1,10 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const Home: React.FC = () => {
+  useEffect(() => {
+    // Dynamic SEO Injection
+    document.title = "MakeupArtist.ai | #1 AI Beauty Domain For Sale";
+    
+    const metaTags = [
+        { name: "description", content: "Premium Domain For Sale: MakeupArtist.ai. The authoritative digital asset for AI Makeup Try-On, Portfolio Generators, and Beauty SaaS. Secure it on Atom or GoDaddy." },
+        { name: "keywords", content: "Makeup Artist AI, AI Makeup Try-On, Makeup Portfolio Generator, Virtual Makeup, Beauty Business Tools, Makeup Website Builder, Professional Makeup Portfolio, Buy Domain, Premium Domain" },
+        { property: "og:title", content: "MakeupArtist.ai - The Future of Beauty Tech" },
+        { property: "og:description", content: "Category-defining domain name available for acquisition. Perfect for the next unicorn in Beauty AI." },
+        { property: "og:image", content: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=2070&auto=format&fit=crop" }
+    ];
+
+    metaTags.forEach(tag => {
+        let element;
+        if (tag.name) {
+            element = document.querySelector(`meta[name="${tag.name}"]`);
+            if (!element) {
+                element = document.createElement('meta');
+                element.setAttribute('name', tag.name);
+                document.head.appendChild(element);
+            }
+            element.setAttribute('content', tag.content);
+        } else if (tag.property) {
+             element = document.querySelector(`meta[property="${tag.property}"]`);
+            if (!element) {
+                element = document.createElement('meta');
+                element.setAttribute('property', tag.property);
+                document.head.appendChild(element);
+            }
+            element.setAttribute('content', tag.content);
+        }
+    });
+  }, []);
+
   return (
     <div className="bg-white">
       {/* SEO H1 */}
-      <h1 className="sr-only">Makeup Artist AI Platform | Professional Makeup Portfolio Generator | AI Makeup Try-On | Beauty Business Tools</h1>
+      <h1 className="sr-only">MakeupArtist.ai - Buy Premium Domain | AI Beauty Technology & Virtual Try-On Asset</h1>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
