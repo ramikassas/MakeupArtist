@@ -1,0 +1,8 @@
+{
+  "name": "MakeupArtist.ai",
+  "description": "Your professional AI beauty consultant featuring Live Voice Analysis, Custom Tutorials, and Deep Skin Analysis.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
