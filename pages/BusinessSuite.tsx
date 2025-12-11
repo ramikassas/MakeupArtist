@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ProGate from '../components/ProGate';
 import { generateInstagramCaption, calculatePricing } from '../services/geminiService';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const BusinessSuite: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'content' | 'pricing'>('content');
@@ -31,7 +32,7 @@ const BusinessSuite: React.FC = () => {
 
     return (
         <ProGate>
-            <div className="max-w-5xl mx-auto px-4 py-12">
+            <div className="max-w-5xl mx-auto px-4 py-12 relative">
                 <header className="mb-8">
                     <h1 className="text-3xl font-serif font-bold mb-2">Business Suite</h1>
                     <p className="text-gray-500">Tools to manage and grow your artistry business.</p>
@@ -44,12 +45,13 @@ const BusinessSuite: React.FC = () => {
 
                 {activeTab === 'content' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-4">
+                        <div className="space-y-4 relative">
                             <label className="block text-sm font-bold">Describe the look you created</label>
                             <textarea value={lookDesc} onChange={e => setLookDesc(e.target.value)} className="w-full h-32 border rounded-xl p-4" placeholder="Soft glam bridal makeup with rose gold tones..."></textarea>
                             <button onClick={handleCaption} disabled={loadingContent} className="bg-brand-600 text-white px-6 py-3 rounded-lg font-bold w-full">{loadingContent ? 'Generating...' : 'Generate Caption & Hashtags'}</button>
+                            {loadingContent && <LoadingOverlay messages={["Analyzing trends...", "Generating hooks...", "Selecting hashtags..."]} />}
                         </div>
-                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 whitespace-pre-wrap font-mono text-sm">
+                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 whitespace-pre-wrap font-mono text-sm min-h-[200px]">
                             {caption || "Caption will appear here..."}
                         </div>
                     </div>
@@ -57,12 +59,13 @@ const BusinessSuite: React.FC = () => {
 
                 {activeTab === 'pricing' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-4">
+                        <div className="space-y-4 relative">
                             <label className="block text-sm font-bold">Event Details</label>
                             <textarea value={pricingDetails} onChange={e => setPricingDetails(e.target.value)} className="w-full h-32 border rounded-xl p-4" placeholder="Bridal makeup, 3 bridesmaids, travel 20km, using luxury products..."></textarea>
                             <button onClick={handlePricing} disabled={loadingPrice} className="bg-black text-white px-6 py-3 rounded-lg font-bold w-full">{loadingPrice ? 'Calculating...' : 'Calculate Quote'}</button>
+                            {loadingPrice && <LoadingOverlay messages={["Checking market rates...", "Calculating travel costs...", "Estimating product usage..."]} />}
                         </div>
-                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 whitespace-pre-wrap">
+                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 whitespace-pre-wrap min-h-[200px]">
                             {priceResult || "Price recommendation will appear here..."}
                         </div>
                     </div>

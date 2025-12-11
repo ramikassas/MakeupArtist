@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { getFastMakeupAdvice, speakText } from '../services/geminiService';
-import { ChatMessage } from '../types';
+import { ChatMessage, UserTier } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const QuickChat: React.FC = () => {
+  const { user } = useAuth();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -13,11 +15,12 @@ const QuickChat: React.FC = () => {
 
     const userMsg: ChatMessage = { role: 'user', text: input, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
+    const currentInput = input;
     setInput('');
     setLoading(true);
 
     try {
-      const responseText = await getFastMakeupAdvice(input);
+      const responseText = await getFastMakeupAdvice(currentInput);
       const botMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
@@ -43,6 +46,9 @@ const QuickChat: React.FC = () => {
     }
   };
 
+  // Logic to show upsell: Free user AND specific keywords or random chance
+  const showUpsell = user?.tier === UserTier.FREE && messages.length > 2;
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 h-[calc(100vh-80px)] flex flex-col">
       <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -65,6 +71,19 @@ const QuickChat: React.FC = () => {
           </div>
         ))}
         {loading && <div className="text-gray-400 text-sm ml-4">Typing...</div>}
+        
+        {/* Subtle Upsell */}
+        {showUpsell && (
+            <div className="flex justify-center mt-4 animate-fade-in">
+                <button 
+                    onClick={() => document.getElementById('payment-modal')?.classList.remove('hidden')}
+                    className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                >
+                    <span>🔬 Need a deeper clinical analysis?</span>
+                    <span className="text-gold-500">Go Pro &rarr;</span>
+                </button>
+            </div>
+        )}
       </div>
 
       <div className="flex gap-2">

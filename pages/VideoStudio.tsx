@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ProGate from '../components/ProGate';
 import { generateMakeupVideo } from '../services/geminiService';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const VideoStudio: React.FC = () => {
   const [prompt, setPrompt] = useState('');
@@ -31,7 +32,7 @@ const VideoStudio: React.FC = () => {
 
   return (
     <ProGate>
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto px-4 py-12 relative">
         <h1 className="text-3xl font-serif font-bold text-gray-900 mb-8">Video Studio (Beta)</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -75,15 +76,12 @@ const VideoStudio: React.FC = () => {
                 {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
             </div>
 
-            <div className="bg-gray-100 rounded-2xl flex items-center justify-center min-h-[400px] overflow-hidden border border-gray-200">
-                {generating ? (
-                    <div className="text-center">
-                        <div className="animate-spin text-4xl mb-4">🎥</div>
-                        <p className="text-gray-500 animate-pulse">Rendering AI frames...</p>
-                    </div>
-                ) : videoUrl ? (
+            <div className="bg-gray-100 rounded-2xl flex items-center justify-center min-h-[400px] overflow-hidden border border-gray-200 relative">
+                {generating && <LoadingOverlay messages={["Scripting storyboard...", "Generating 3D assets...", "Rendering texture maps...", "Compiling video frames...", "Polishing output..."]} />}
+                
+                {!generating && videoUrl ? (
                     <video src={videoUrl} controls autoPlay loop className="w-full h-full object-cover" />
-                ) : (
+                ) : !generating && (
                     <div className="text-gray-400 text-center p-8">
                         <p className="text-4xl mb-2">✨</p>
                         <p>Your masterpiece will appear here</p>

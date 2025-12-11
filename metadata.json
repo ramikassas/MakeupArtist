@@ -1,6 +1,6 @@
 {
-  "name": "MakeupArtist.ai",
-  "description": "The world's #1 AI Beauty Ecosystem. Automating the artistry, elevating the artist. Free essentials and professional grade tools.",
+  "name": "MakeupArtist.ai - #1 AI Beauty Business Platform",
+  "description": "Makeup Artist AI Platform | Professional Makeup Portfolio Generator | AI Makeup Try-On | Beauty Business Tools. The all-in-one solution to automate your artistry and elevate your career.",
   "requestFramePermissions": [
     "camera",
     "microphone"

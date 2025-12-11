@@ -10,7 +10,8 @@ const DashboardCard: React.FC<{
     link: string; 
     locked?: boolean;
     tier?: string;
-}> = ({ title, subtitle, icon, link, locked, tier }) => (
+    badge?: string;
+}> = ({ title, subtitle, icon, link, locked, tier, badge }) => (
     <Link 
         to={link}
         onClick={(e) => {
@@ -23,8 +24,11 @@ const DashboardCard: React.FC<{
     >
         <div className="flex justify-between items-start mb-4">
             <span className="text-3xl">{icon}</span>
-            {locked && <span className="text-xs font-bold bg-gray-200 text-gray-500 px-2 py-1 rounded">LOCKED</span>}
-            {tier === 'PRO' && !locked && <span className="text-[10px] font-bold bg-black text-gold-500 px-2 py-1 rounded">PRO</span>}
+            <div className="flex gap-2">
+                {badge && <span className="text-[10px] font-bold bg-brand-100 text-brand-600 px-2 py-1 rounded">{badge}</span>}
+                {locked && <span className="text-xs font-bold bg-gray-200 text-gray-500 px-2 py-1 rounded">LOCKED</span>}
+                {tier === 'PRO' && !locked && <span className="text-[10px] font-bold bg-black text-gold-500 px-2 py-1 rounded">PRO</span>}
+            </div>
         </div>
         <h3 className="text-lg font-bold text-gray-900 mb-1">{title}</h3>
         <p className="text-sm text-gray-500">{subtitle}</p>
@@ -47,7 +51,7 @@ const Dashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-12">
       <header className="mb-12">
         <h1 className="text-3xl font-serif font-bold text-gray-900">Studio Dashboard</h1>
-        <p className="text-gray-500">Welcome back, {user.name}.</p>
+        <p className="text-gray-500">Your AI Beauty Ecosystem.</p>
       </header>
 
       {/* Free Tier Essentials */}
@@ -60,16 +64,17 @@ const Dashboard: React.FC = () => {
                 icon="💬" 
                 link="/chat" 
             />
-            {/* Placeholder for future Lite features */}
+            <DashboardCard 
+                title="AI Makeup Try-On" 
+                subtitle="Upload selfie & apply looks." 
+                icon="💄" 
+                link="/try-on"
+                badge="NEW"
+            />
             <div className="p-6 rounded-2xl border border-gray-100 bg-gray-50 flex flex-col items-center justify-center text-center opacity-50">
                 <span className="text-2xl mb-2">📅</span>
                 <h3 className="font-bold">Daily Look</h3>
-                <p className="text-xs">Coming tomorrow</p>
-            </div>
-            <div className="p-6 rounded-2xl border border-gray-100 bg-gray-50 flex flex-col items-center justify-center text-center opacity-50">
-                <span className="text-2xl mb-2">💄</span>
-                <h3 className="font-bold">Product Match Lite</h3>
-                <p className="text-xs">Limit reached</p>
+                <p className="text-xs">Refreshes in 12h</p>
             </div>
         </div>
       </section>
@@ -81,12 +86,38 @@ const Dashboard: React.FC = () => {
             {!isPro && <span className="text-xs text-gray-400">Locked</span>}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <DashboardCard 
+                title="Brand Identity" 
+                subtitle="Logo, Colors & Fonts." 
+                icon="🆔" 
+                link="/brand-identity" 
+                locked={!isPro}
+                tier="PRO"
+                badge="NEW"
+            />
+            <DashboardCard 
+                title="Look-Book Creator" 
+                subtitle="Generate seasonal collections." 
+                icon="📖" 
+                link="/lookbook" 
+                locked={!isPro}
+                tier="PRO"
+                badge="NEW"
+            />
             <DashboardCard 
                 title="Clinical Skin Lab" 
                 subtitle="14-point deep analysis engine." 
                 icon="🧬" 
                 link="/skin-analysis" 
+                locked={!isPro}
+                tier="PRO"
+            />
+            <DashboardCard 
+                title="Portfolio Generator" 
+                subtitle="Before/After & Retouching." 
+                icon="📸" 
+                link="/portfolio" 
                 locked={!isPro}
                 tier="PRO"
             />

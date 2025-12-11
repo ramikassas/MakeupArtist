@@ -6,13 +6,153 @@ const getAIClient = () => {
     return new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 };
 
+// --- Image Utils Helper ---
+const cleanBase64 = (b64: string) => b64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
+
+// --- Brand & Creative Services ---
+
+export interface BrandIdentityResult {
+    colors: { primary: string; secondary: string; accent: string; background: string };
+    fonts: { heading: string; body: string };
+    tagline: string;
+    logoConcept: string;
+    socialBio: string;
+}
+
+export const generateBrandIdentity = async (brandName: string, vibe: string): Promise<BrandIdentityResult> => {
+    const ai = getAIClient();
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: `Create a professional brand identity for a makeup artist business named "${brandName}". 
+            Vibe/Style: ${vibe}.
+            
+            Return strictly JSON with:
+            - colors: object with hex codes for primary, secondary, accent, background.
+            - fonts: object with font family names for heading and body (use standard web fonts or Google Fonts).
+            - tagline: a catchy, short slogan.
+            - logoConcept: a short description of a logo symbol.
+            - socialBio: a 150-char bio for Instagram.
+            `,
+            config: { responseMimeType: "application/json" }
+        });
+        return JSON.parse(response.text || '{}') as BrandIdentityResult;
+    } catch (e) {
+        throw new Error("Brand generation failed");
+    }
+}
+
+export const generateLookBookImage = async (styleName: string, vibe: string): Promise<string | null> => {
+    const ai = getAIClient();
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: {
+                parts: [
+                    { text: `High fashion makeup look book photography. Style: ${styleName}. Vibe: ${vibe}. Ultra HD, beauty editorial lighting, extreme close up.` }
+                ]
+            }
+        });
+        for (const part of response.candidates?.[0]?.content?.parts || []) {
+            if (part.inlineData) {
+                return `data:image/png;base64,${part.inlineData.data}`;
+            }
+        }
+        return null;
+    } catch (e) { return null; }
+}
+
+// --- Image Generation Services ---
+
+export const generateMakeupTryOn = async (
+    userImage: string, 
+    referenceImage: string | null, 
+    intensity: number,
+    description: string
+): Promise<string | null> => {
+    const ai = getAIClient();
+    try {
+        const parts: any[] = [
+             {
+                inlineData: {
+                    mimeType: 'image/jpeg',
+                    data: cleanBase64(userImage)
+                }
+            }
+        ];
+
+        let prompt = `Act as a professional makeup artist. Apply a makeup look to the person in the first image. 
+        Look description: ${description}.
+        Intensity of makeup: ${intensity}%. 
+        Maintain the person's exact identity, facial structure, and lighting. Only apply makeup.`;
+
+        if (referenceImage) {
+            parts.push({
+                inlineData: {
+                    mimeType: 'image/jpeg',
+                    data: cleanBase64(referenceImage)
+                }
+            });
+            prompt += " Use the second image as the EXACT reference for the makeup style, colors, and finish.";
+        }
+
+        parts.push({ text: prompt });
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image', 
+            contents: { parts },
+        });
+
+        for (const part of response.candidates?.[0]?.content?.parts || []) {
+            if (part.inlineData) {
+                return `data:image/png;base64,${part.inlineData.data}`;
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error("Try-On Error", e);
+        return null;
+    }
+}
+
+export const generatePortfolioImage = async (image: string, type: 'STUDIO' | 'RETOUCH' | 'BACKGROUND' | 'BEFORE_AFTER'): Promise<string | null> => {
+    const ai = getAIClient();
+    try {
+        let prompt = "Enhance this image for a professional makeup portfolio. ";
+        if (type === 'STUDIO') prompt += "Apply virtual studio lighting (softbox key light), sharpen details, and color grade for a high-end fashion look.";
+        if (type === 'RETOUCH') prompt += "Perform high-end skin retouching (frequency separation style), reduce blemishes, maintain skin texture, and brighten eyes.";
+        if (type === 'BACKGROUND') prompt += "Replace the background with a cinematic, blurred luxury salon interior or abstract bokeh. Keep the subject perfectly isolated.";
+        if (type === 'BEFORE_AFTER') prompt += "Create a split screen comparison. On the left, show the face with no makeup (raw). On the right, show the face with a flawless, glamorous makeup application. Ultra realistic.";
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: {
+                parts: [
+                    { inlineData: { mimeType: 'image/jpeg', data: cleanBase64(image) } },
+                    { text: prompt }
+                ]
+            }
+        });
+
+        for (const part of response.candidates?.[0]?.content?.parts || []) {
+            if (part.inlineData) {
+                return `data:image/png;base64,${part.inlineData.data}`;
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error("Portfolio Error", e);
+        return null;
+    }
+}
+
 // --- Skin Analysis Engines ---
 
 export const analyzeSkinBasic = async (userDescription: string): Promise<SkinAnalysisResult> => {
     const ai = getAIClient();
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-lite-latest', // Fast model for free tier
+            model: 'gemini-2.5-flash-lite-latest',
             contents: `Analyze this skin description: "${userDescription}". 
             Return ONLY a JSON object with: 
             - skinType (string)
@@ -37,7 +177,7 @@ export const analyzeSkinUltra = async (userDescription: string): Promise<SkinAna
     const ai = getAIClient();
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-preview', // Thinking model for Pro
+            model: 'gemini-3-pro-preview',
             contents: `Perform a CLINICAL GRADE skin analysis based on this input: "${userDescription}".
             Act as a senior dermatologist.
             Analyze 14 parameters including texture, pores, redness, hydration, elasticity.

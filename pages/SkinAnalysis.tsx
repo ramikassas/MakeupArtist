@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { UserTier, SkinAnalysisResult } from '../types';
 import { analyzeSkinBasic, analyzeSkinUltra } from '../services/geminiService';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const SkinAnalysis: React.FC = () => {
   const { user } = useAuth();
@@ -30,7 +31,9 @@ const SkinAnalysis: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12 relative">
+        {loading && <LoadingOverlay messages={["Scanning dermis layer...", "Evaluating pore density...", "Comparing against clinical data...", "Formulating routine...", "Generating report..."]} />}
+        
         <header className="mb-8">
             <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-serif font-bold">AI Skin Analyzer</h1>
@@ -74,7 +77,6 @@ const SkinAnalysis: React.FC = () => {
                     <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center">
                         <span className="text-4xl mb-4">🔬</span>
                         <p>Results will appear here.</p>
-                        {loading && <p className="text-black animate-pulse mt-2">AI Dermatologist is thinking...</p>}
                     </div>
                 ) : (
                     <div className="animate-fade-in space-y-6">
